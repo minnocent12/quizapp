@@ -26,9 +26,13 @@ class QuizApp extends StatelessWidget {
           return QuizScreen(settings: settings);
         },
         '/summary': (context) {
-          final results = ModalRoute.of(context)!.settings.arguments
+          final arguments = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;
-          return SummaryScreen(results: results);
+
+          return SummaryScreen(
+            results: arguments,
+            quizSettings: arguments['quizSettings'], // Extract the settings
+          );
         },
       },
     );
