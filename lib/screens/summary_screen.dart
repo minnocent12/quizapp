@@ -20,6 +20,7 @@ class SummaryScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Quiz Summary'),
         backgroundColor: Colors.teal,
+        automaticallyImplyLeading: false, // Remove the back arrow
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -64,13 +65,16 @@ class SummaryScreen extends StatelessWidget {
                         children: [
                           const SizedBox(height: 8),
                           Text(
-                            'Your answer: ${answer['user_answer']}',
+                            // Check if the answer is null and display "Not Answered"
+                            'Your answer: ${answer['user_answer'] ?? 'Not Answered'}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: answer['is_correct']
-                                  ? Colors.green
-                                  : Colors.red,
+                              color: answer['user_answer'] == null
+                                  ? Colors.grey
+                                  : (answer['is_correct']
+                                      ? Colors.green
+                                      : Colors.red),
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -92,53 +96,60 @@ class SummaryScreen extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // Retake Quiz Button
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to the Quiz screen with the same settings
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/quiz',
-                  (route) => false,
-                  arguments: quizSettings, // Use the same settings
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+            // Horizontal layout for buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Retake Quiz Button
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to the Quiz screen with the same settings
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/quiz',
+                      (route) => false,
+                      arguments: quizSettings, // Use the same settings
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal, // Same color for both buttons
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 32.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Text('Retake Quiz'),
                 ),
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(width: 16), // Space between the buttons
+                // Return to Setup Button
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/', // Navigate to the Setup screen
+                      (route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal, // Same color for both buttons
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 32.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Text('Return to Setup'),
                 ),
-              ),
-              child: const Text('Retake Quiz'),
-            ),
-            const SizedBox(height: 8),
-
-            // Return to Setup Button
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/', // Navigate to the Setup screen
-                  (route) => false,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: const Text('Return to Setup'),
+              ],
             ),
           ],
         ),

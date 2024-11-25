@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/splash_screen.dart'; // Import the SplashScreen
 import 'screens/setup_screen.dart';
 import 'screens/quiz_screen.dart';
 import 'screens/summary_screen.dart';
@@ -17,8 +18,9 @@ class QuizApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/',
+      initialRoute: '/splash', // Set initial route to splash screen
       routes: {
+        '/splash': (context) => const SplashScreen(), // Splash screen route
         '/': (context) => const SetupScreen(),
         '/quiz': (context) {
           final settings = ModalRoute.of(context)!.settings.arguments
@@ -28,7 +30,6 @@ class QuizApp extends StatelessWidget {
         '/summary': (context) {
           final arguments = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;
-
           return SummaryScreen(
             results: arguments,
             quizSettings: arguments['quizSettings'], // Extract the settings

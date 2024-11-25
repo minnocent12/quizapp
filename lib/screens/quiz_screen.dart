@@ -20,6 +20,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int _timeLeft = 15;
   List<Map<String, dynamic>> _answers = [];
   List<String> _shuffledAnswers = [];
+  bool _timeUp = false; // New variable to track if the time is up
 
   @override
   void initState() {
@@ -73,12 +74,16 @@ class _QuizScreenState extends State<QuizScreen> {
   void _startTimer() {
     _timeLeft = 15;
     _timer?.cancel();
+    setState(() {
+      _timeUp = false; // Reset the "time up" status each time the timer starts
+    });
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         if (_timeLeft > 0) {
           _timeLeft--;
         } else {
           _timer?.cancel();
+          _timeUp = true; // Mark time up when the timer expires
           _handleAnswer(null); // Automatically handle if time runs out
         }
       });
@@ -92,6 +97,8 @@ class _QuizScreenState extends State<QuizScreen> {
     if (isCorrect) {
       _score++;
       _feedback = 'Correct!';
+    } else if (answer == null) {
+      _feedback = 'Time’s up! The correct answer was: $correctAnswer';
     } else {
       _feedback = 'Incorrect! The correct answer was: $correctAnswer';
     }
@@ -155,6 +162,7 @@ class _QuizScreenState extends State<QuizScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.teal,
+        automaticallyImplyLeading: false, // Removes the back arrow
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -215,7 +223,9 @@ class _QuizScreenState extends State<QuizScreen> {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
                 decoration: BoxDecoration(
-                  color: _feedback == 'Correct!' ? Colors.green : Colors.red,
+                  color: _feedback == 'Correct!' || _feedback == "Time’s up!"
+                      ? Colors.green
+                      : Colors.red,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -240,6 +250,21 @@ class _QuizScreenState extends State<QuizScreen> {
                 color: Colors.deepOrange,
               ),
             ),
+
+            // Display "Time’s up!" message if the time is up
+            if (_timeUp)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Time’s up!",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
           ],
         ),
       ),

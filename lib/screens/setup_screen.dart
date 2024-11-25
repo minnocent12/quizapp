@@ -22,7 +22,7 @@ class _SetupScreenState extends State<SetupScreen> {
   void initState() {
     super.initState();
     _fetchCategories();
-    _numberController.text = '10';
+    _numberController.text;
   }
 
   Future<void> _fetchCategories() async {
@@ -107,139 +107,134 @@ class _SetupScreenState extends State<SetupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Setup'),
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Colors.teal, // Same color as SummaryScreen
         centerTitle: true,
+        automaticallyImplyLeading: false, // Remove back arrow
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.deepPurpleAccent],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: SingleChildScrollView(
+        // Allow scrolling
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Setup Your Quiz',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildCard(
-                      title: 'Number of Questions',
-                      child: TextField(
-                        controller: _numberController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter a number (1-50)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildCard(
-                      title: 'Category',
-                      child: _isLoadingCategories
-                          ? const Center(child: CircularProgressIndicator())
-                          : DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Select category',
-                              ),
-                              value: _selectedCategory,
-                              items: _categories.map((cat) {
-                                return DropdownMenuItem(
-                                  value: cat['id'].toString(),
-                                  child: Text(cat['name']),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedCategory = value;
-                                });
-                              },
-                            ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildCard(
-                      title: 'Difficulty',
-                      child: DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Select difficulty',
-                        ),
-                        value: _selectedDifficulty,
-                        items: ['easy', 'medium', 'hard'].map((difficulty) {
-                          return DropdownMenuItem(
-                            value: difficulty,
-                            child: Text(difficulty.capitalize()),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedDifficulty = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildCard(
-                      title: 'Question Type',
-                      child: DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Select question type',
-                        ),
-                        value: _selectedType,
-                        items: [
-                          {'value': 'multiple', 'label': 'Multiple Choice'},
-                          {'value': 'boolean', 'label': 'True/False'}
-                        ].map((type) {
-                          return DropdownMenuItem(
-                            value: type['value'],
-                            child: Text(type['label']!),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedType = value;
-                          });
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Center(
-                      child: ElevatedButton.icon(
-                        onPressed: _categories.isNotEmpty ? _startQuiz : null,
-                        icon: const Icon(Icons.play_arrow),
-                        label: const Text('Start Quiz'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 14,
-                            horizontal: 28,
-                          ),
-                          textStyle: const TextStyle(fontSize: 18),
-                        ),
-                      ),
-                    ),
-                  ],
+            // Setup Title
+            Text(
+              'Setup Your Quiz',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+
+            // Category Setup Card
+            _buildCard(
+              title: 'Number of Questions',
+              child: TextField(
+                controller: _numberController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  hintText: 'Enter a number (1-50)',
+                  border: OutlineInputBorder(),
                 ),
               ),
+            ),
+            const SizedBox(height: 16),
+            _buildCard(
+              title: 'Category',
+              child: _isLoadingCategories
+                  ? const Center(child: CircularProgressIndicator())
+                  : DropdownButtonFormField<String>(
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Select category',
+                      ),
+                      value: _selectedCategory,
+                      items: _categories.map((cat) {
+                        return DropdownMenuItem(
+                          value: cat['id'].toString(),
+                          child: Text(cat['name']),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                    ),
+            ),
+            const SizedBox(height: 16),
+            _buildCard(
+              title: 'Difficulty',
+              child: DropdownButtonFormField<String>(
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Select difficulty',
+                ),
+                value: _selectedDifficulty,
+                items: ['easy', 'medium', 'hard'].map((difficulty) {
+                  return DropdownMenuItem(
+                    value: difficulty,
+                    child: Text(difficulty.capitalize()),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedDifficulty = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildCard(
+              title: 'Question Type',
+              child: DropdownButtonFormField<String>(
+                isExpanded: true,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Select question type',
+                ),
+                value: _selectedType,
+                items: [
+                  {'value': 'multiple', 'label': 'Multiple Choice'},
+                  {'value': 'boolean', 'label': 'True/False'}
+                ].map((type) {
+                  return DropdownMenuItem(
+                    value: type['value'],
+                    child: Text(type['label']!),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedType = value;
+                  });
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Start Quiz Button
+            ElevatedButton(
+              onPressed: _categories.isNotEmpty ? _startQuiz : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // Same color as other buttons
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 32.0,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                textStyle: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              child: const Text('Start Quiz'),
             ),
           ],
         ),
@@ -262,7 +257,7 @@ class _SetupScreenState extends State<SetupScreen> {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Colors.teal,
               ),
             ),
             const SizedBox(height: 8),
